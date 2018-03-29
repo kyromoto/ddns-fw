@@ -21,6 +21,7 @@
     "basic-auth": "2.0.0",
     "dotenv": "5.0.1",
     "express": "4.16.3",
+    "inwx": "1.0.0",
     "request": "2.85.0",
     "xmlbuilder": "9.0.7"
   },

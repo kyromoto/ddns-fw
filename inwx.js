@@ -2,75 +2,43 @@ var request = require('request');
 var builder = require('xmlbuilder');
 
 module.exports = class {
-  constructor() {
-
+  apiNameserverUpdateRecord(INWX_USER, INWX_PASS, INWX_DOMAIN_ID, WAN_IP) {
+    return builder.create('methodCall')
+      .ele('methodName', 'nameserver.updateRecord').up()
+        .ele('params')
+          .ele('param')
+            .ele('struct')
+              .ele('memeber')
+                .ele('name', 'user').up()
+                .ele('value')
+                  .ele('string', INWX_USER).up()
+                .up()
+              .up()
+              .ele('memeber')
+                .ele('name', 'pass').up()
+                .ele('value')
+                  .ele('string', INWX_PASS).up()
+                .up()
+              .up()
+              .ele('memeber')
+                .ele('name', 'id').up()
+                .ele('value')
+                  .ele('string', INWX_DOMAIN_ID).up()
+                .up()
+              .up()
+              .ele('memeber')
+                .ele('name', 'content').up()
+                .ele('value')
+                  .ele('string', WAN_IP).up()
+                .up()
+              .up()
+            .up()
+          .up()
+        .up()
+      .end({pretty : true});
   }
 
-  this.api = {
-    nameserver : {
-      updateRecord : {}
-    }
-  }
-
-  this.api.nameserver.updateRecord = (INWX_USER, INWX_PASS, INWX_DOMAIN_ID, WAN_IP) => {
-    return builder.create({
-      methodCall : {
-        methodName : {
-          '#text' : 'nameserver.updateRecord'
-        },
-        params : {
-          param : {
-            value : {
-              struct : {
-                member : {
-                  name {
-                    '#text' : 'user'
-                  },
-                  value : {
-                    string : {
-                      '#text' : INWX_USER
-                    }
-                  }
-                },
-                member : {
-                  name {
-                    '#text' : 'pass'
-                  },
-                  value : {
-                    string : {
-                      '#text' : INWX_PASS
-                    }
-                  }
-                },
-                member : {
-                  name {
-                    '#text' : 'id'
-                  },
-                  value : {
-                    string : {
-                      '#text' : INWX_DOMAIN_ID
-                    }
-                  }
-                },
-                member : {
-                  name {
-                    '#text' : 'content'
-                  },
-                  value : {
-                    string : {
-                      '#text' : WAN_IP
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    });
-  }
-
-  this.sendRequest = (xml) => {
+  sendRequest(xml) {
     request({
       method    : 'POST',
       //preambleCRLF: true,
