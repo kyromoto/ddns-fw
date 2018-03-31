@@ -2,7 +2,6 @@ const path    = require('path');
 
 const dotenv  = require('dotenv').config();
 const express = require('express');
-const inwx    = require('inwx');
 
 const auth    = require('./auth');
 
@@ -18,31 +17,10 @@ const INWX_API          = process.env.INWX_API    || 'testing'
 
 //https://dyndns.inwx.com/nic/update?myip=<ipaddr>
 
+console.log('INWX ACCOUNT: %s %s %s', INWX_USER, INWX_PASS, INWX_API);
+
 app.use(auth(CONFIG));
 
-try {
-  inwx({ api : INWX_API, user : INWX_USER, pass : INWX_PASS }, (api) => {
-    console.log("API is ready!");
+app.use('/api', require('./CApi')(INWX_API, INWX_USER, INWX_PASS));
 
-    api.call('account', 'info', {}, (res) => {
-      console.log('account.info response:\n', res);
-      api.close();
-    });
-  });
-} catch(e) {
-  console.log(e);
-}
-
-
-app.get('/api/update', (req, res) => {
-  if (typeof req.query.myip === 'undefined') {
-    return res.send("ERROR");
-  }
-
-  console.log(req.query.myip);
-  res.send("SUCCESS");
-});
-
-app.listen(PORT, () => {
-  console.log("Server is listening on port %s!", PORT);
-});
+app.listen(PORT, () => console.log("Server is listening on port %s!", PORT));

@@ -8,22 +8,22 @@ module.exports = (config) => {
 
     if (account == null) {
       console.log("ERROR : result of config filter is null.");
-      return res.send("ERROR : username or password invalid");
+      return res.send("badauth");
     }
 
     if (account.length > 1) {
       console.log("ERROR : Found more then 1 account.");
-      return res.send("ERROR : username or password invalid");
+      return res.send("badauth");
     }
 
     if (account.length < 1) {
       console.log("ERROR : Did not found username %s!", credentials.name);
-      return res.send("ERROR : username or password invalid");
+      return res.send("badauth");
     }
 
     if (account[0].password != credentials.pass) {
       console.log("ERROR : password for username %s did not match.", credentials.name);
-      return res.send("ERROR : username or password invalid");
+      return res.send("badauth");
     }
 
     //add values to request
