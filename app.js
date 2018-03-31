@@ -19,8 +19,15 @@ const INWX_API          = process.env.INWX_API    || 'testing'
 
 console.log('INWX ACCOUNT: %s %s %s', INWX_USER, INWX_PASS, INWX_API);
 
+app.get('/hello', (req, res) => {
+  var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  res.send("hello " + ip + "!");
+});
+
 app.use(auth(CONFIG));
 
 app.use('/api', require('./CApi')(INWX_API, INWX_USER, INWX_PASS));
+
+
 
 app.listen(PORT, () => console.log("Server is listening on port %s!", PORT));
