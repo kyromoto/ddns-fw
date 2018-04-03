@@ -17,7 +17,7 @@ const INWX_API          = process.env.INWX_API    || 'testing'
 
 //https://dyndns.inwx.com/nic/update?myip=<ipaddr>
 
-console.log('INWX ACCOUNT: %s %s %s', INWX_USER, INWX_PASS, INWX_API);
+console.log('use INWX Account %s @ %s', INWX_USER, INWX_API);
 
 app.get('/hello', (req, res) => {
   var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
