@@ -2,30 +2,25 @@ const path    = require('path');
 
 const dotenv  = require('dotenv').config();
 const express = require('express');
-
-const auth    = require('./auth');
+const helmet  = require('helmet');
 
 const app     = express();
 
 const PORT              = process.env.SERVER_PORT || 3000;
-const AUTH_CONFIG_FILE  = process.env.AUTH_CONFIG_FILE || path.join(__dirname, 'config.json');
-const CONFIG            = require(AUTH_CONFIG_FILE) || new Array();
+const NODE_ENV          = process.env.NODE_ENV    || 'development';
 
-const INWX_USER         = process.env.INWX_USER   || 'nouser';
-const INWX_PASS         = process.env.INWX_PASS   || 'nopassword';
-const INWX_API          = process.env.INWX_API    || 'testing'
+console.log("NODE_ENV: %s", NODE_ENV);
 
 //https://dyndns.inwx.com/nic/update?myip=<ipaddr>
 
-console.log('use INWX Account %s @ %s', INWX_USER, INWX_API);
+if (NODE_ENV == "production") app.use(helmet());
 
-app.get('/hello', (req, res) => {
-  var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-  res.send("hello " + ip + "!");
-});
+app.use('/hello', require(path.join(__dirname, 'hello')));
 
-app.use(auth(CONFIG));
+app.use('/update', require(path.join(__dirname, 'ddnsServer')));
 
-app.use('/api', require('./CApi')(INWX_API, INWX_USER, INWX_PASS));
+app.listen(PORT, () => console.log("DDNS-FW app is listening on port %s!", PORT));
 
-app.listen(PORT, () => console.log("Server is listening on port %s!", PORT));
+if (NODE_ENV == "test") {
+  module.exports = app;
+}
